@@ -652,9 +652,8 @@ function generateRefVariants(img,tones){
   let c0=refO.getContext("2d");
 
   // Fit image same way existing code did (cover)
-  const ratio=Math.max(w/img.width, h/img.height);
-  const dw=img.width*ratio, dh=img.height*ratio;
-  const dx=(w-dw)/2, dy=(h-dh)/2;
+drawContain(c0, img, w, h);
+
 
   // PRE BLUR
   try { c0.filter = `blur(${SV_PRE}px)`; } catch(e){ c0.filter = 'none'; }
@@ -694,8 +693,19 @@ c0.putImageData(id, 0, 0);
  
 function renderReference(){
   if (!refImg) return;
-  drawContain(ctxRef, refImg, reference.width, reference.height);
+
+  ctxRef.setTransform(1,0,0,1,0,0);
+  ctxRef.clearRect(0,0,reference.width,reference.height);
+
+  if (massingTones && refO) {
+    // MASSING MODE → show processed image
+    ctxRef.drawImage(refO, 0, 0);
+  } else {
+    // NORMAL / BLACK MIRROR → show fitted original
+    drawContain(ctxRef, refImg, reference.width, reference.height);
+  }
 }
+
 
  
 /* IMPORT */
