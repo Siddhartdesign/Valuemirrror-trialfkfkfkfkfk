@@ -25,7 +25,7 @@ video, canvas {
 }
 #camera{z-index:1;transition:transform .2s,filter .2s;}
 #massing{z-index:2;display:none;image-rendering:pixelated;}
-#reference{z-index:3;display:none;image-rendering:pixelated;object-fit:contain;
+#reference{z-index:3;display:none;image-rendering:pixelated;
 }
 
 /* === NEW FEATURE: Frozen Frame Canvas START === */
@@ -656,9 +656,7 @@ drawContain(c0, img, w, h);
 
 
   // PRE BLUR
-  try { c0.filter = `blur(${SV_PRE}px)`; } catch(e){ c0.filter = 'none'; }
-  c0.drawImage(img,dx,dy,dw,dh);
-  c0.filter = "none";
+  
 
  // QUANTIZE (use dynamic massing tones)
 let id = c0.getImageData(0,0,w,h);
@@ -699,7 +697,7 @@ function renderReference(){
 
   if (massingTones && refO) {
     // MASSING MODE → show processed image
-    ctxRef.drawImage(refO, 0, 0);
+drawContain(ctxRef, refO, reference.width, reference.height);
   } else {
     // NORMAL / BLACK MIRROR → show fitted original
     drawContain(ctxRef, refImg, reference.width, reference.height);
