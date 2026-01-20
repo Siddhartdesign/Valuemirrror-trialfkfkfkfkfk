@@ -25,7 +25,8 @@ video, canvas {
 }
 #camera{z-index:1;transition:transform .2s,filter .2s;}
 #massing{z-index:2;display:none;image-rendering:pixelated;}
-#reference{z-index:3;display:none;image-rendering:pixelated;}
+#reference{z-index:3;display:none;image-rendering:pixelated;object-fit:contain;
+}
 
 /* === NEW FEATURE: Frozen Frame Canvas START === */
 #frozen{z-index:1;display:none;transition:transform .2s,filter .2s;}
@@ -559,6 +560,30 @@ function setMode(btn){
   ctx.drawImage(src, dx, dy, dw, dh);
 }
 
+  function drawContain(ctx, src, cw, ch) {
+  const sw = src.videoWidth || src.width;
+  const sh = src.videoHeight || src.height;
+  if (!sw || !sh) return;
+
+  const sr = sw / sh;
+  const cr = cw / ch;
+
+  let dw, dh;
+  if (sr > cr) {
+    dw = cw;
+    dh = cw / sr;
+  } else {
+    dh = ch;
+    dw = ch * sr;
+  }
+
+  const dx = (cw - dw) / 2;
+  const dy = (ch - dh) / 2;
+
+  ctx.clearRect(0,0,cw,ch);
+  ctx.drawImage(src, dx, dy, dw, dh);
+}
+
 
   
 /* LIVE MASSING - replaced with SeeValue pipeline (pre-blur -> quantize -> post-blur) */
@@ -668,10 +693,10 @@ c0.putImageData(id, 0, 0);
 }
  
 function renderReference(){
-  ctxRef.clearRect(0,0,reference.width,reference.height);
-  if (!refO) return;
-  ctxRef.drawImage(refO,0,0);
+  if (!refImg) return;
+  drawContain(ctxRef, refImg, reference.width, reference.height);
 }
+
  
 /* IMPORT */
 importBtn.onclick=()=>fileInput.click();
@@ -763,17 +788,20 @@ freezeBtn.onclick=()=>{
 
 /* === NEW FEATURE: Horizontal Flip Button Handler START === */
 flipHBtn.onclick=()=>{
-  horizontalFlip=!horizontalFlip;
+  horizontalFlip = !horizontalFlip;
   applyTransforms();
+  if(viewMode === "reference") renderReference();
 };
+
 /* === NEW FEATURE: Horizontal Flip Button Handler END === */
  
 /* FLIP */
 flipBtn.onclick=()=>{
-  verticalFlip=!verticalFlip;
+  verticalFlip = !verticalFlip;
   applyTransforms();
+  if(viewMode === "reference") renderReference();
 };
- 
+
 /* SWITCH CAMERA */
 switchBtn.onclick=()=>{
   facingMode=(facingMode==="user"?"environment":"user");
