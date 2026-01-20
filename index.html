@@ -798,7 +798,6 @@ freezeBtn.onclick=()=>{
 flipHBtn.onclick=()=>{
   horizontalFlip = !horizontalFlip;
   applyTransforms();
-  if(viewMode === "reference") renderReference();
 };
 
 /* === NEW FEATURE: Horizontal Flip Button Handler END === */
@@ -807,7 +806,7 @@ flipHBtn.onclick=()=>{
 flipBtn.onclick=()=>{
   verticalFlip = !verticalFlip;
   applyTransforms();
-  if(viewMode === "reference") renderReference();
+
 };
 
 /* SWITCH CAMERA */
